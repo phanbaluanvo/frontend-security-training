@@ -6,7 +6,7 @@ import AdminDashboardPage from '@/pages/admin/AdminDashboardPage';
 import AdminManageModules from '@/pages/admin/training-modules/AdminManageModules';
 import AdminManageCourses from '@/pages/admin/training-modules/AdminManageCourses';
 import AdminManageLessons from '@/pages/admin/training-modules/AdminManageLessons';
-
+import LessonPage from '@/pages/admin/training-modules/LessonPage';
 
 function AdminPages() {
 
@@ -18,6 +18,8 @@ function AdminPages() {
                 <Route path="/modules" element={<AdminManageModules />} />
                 <Route path="/courses" element={<AdminManageCourses />} />
                 <Route path="/lessons" element={<AdminManageLessons />} />
+                <Route path="/lessons/create" element={<LessonPage />} />
+                <Route path="/lessons/edit/:id" element={<LessonPage />} />
             </Routes>
         </UserProvider>
 

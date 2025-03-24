@@ -1,5 +1,5 @@
 import axios from "@/configs/axios-customize"
-import { sfLike } from "spring-filter-query-builder";
+import { sfEqual, sfLike } from "spring-filter-query-builder";
 
 
 const baseURL = '/topics'
@@ -21,7 +21,7 @@ export const fetchTopics = async (page, size) => {
 
 export const fetchListTopics = async (filter) => {
 
-    const filterString = filter ? sfLike("topicId", `*${filter}*`).toString() : null;
+    const filterString = filter ? sfEqual("topicId", `${filter}`).toString() : null;
 
     const params = filterString ? { filter: filterString } : {};
 

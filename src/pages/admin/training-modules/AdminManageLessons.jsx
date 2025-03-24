@@ -1,20 +1,15 @@
 import React, { useState, useEffect } from "react";
 import Spinner from "@/components/common/Spinner";
 import Table from "@/components/common/Table";
-import TextEditor from "@/components/common/TextEditor";
 import AdminLayout from "@/components/layouts/AdminLayout";
-import { createLessons, fetchLessons, getLessonByLessonId, updateLesson } from "@/services/LessonService";
-import LessonModal from "@/components/modal/LessonModal";
+import { deleteLessonByLessonId, fetchLessons } from "@/services/LessonService";
+import { useNavigate } from "react-router-dom";
 
 const AdminManageLessons = () => {
+    const navigate = useNavigate();
     const [paginationMeta, setPaginationMeta] = useState({ page: 1, size: 10, totalPages: 1, totalElements: 0 });
     const [items, setItems] = useState([]);
     const [loading, setLoading] = useState(true);
-
-    // Modal state
-    const [modalOpen, setModalOpen] = useState(false);
-    const [selectedLesson, setSelectedLesson] = useState(null);
-
 
     const fetchData = async (paginationMeta) => {
         try {
@@ -34,33 +29,26 @@ const AdminManageLessons = () => {
     };
 
     const createNewButton = () => {
-        setSelectedLesson(null);
-        setModalOpen(true);
+        navigate("/admin/lessons/create");
     };
 
-    const editButton = async (lessonId) => {
-        setModalOpen(true);
-        setSelectedLesson(null);
-
-        try {
-            const lessonData = await getLessonByLessonId(lessonId);
-            setSelectedLesson(lessonData);
-        } catch (error) {
-            console.error("Error: ", error);
-        }
+    const editButton = (lessonId) => {
+        navigate(`/admin/lessons/edit/${lessonId}`);
     };
 
-    const handleSave = async (lesson) => {
+    const deleteButton = async (lessonId) => {
         try {
-            if (selectedLesson) {
-                await updateLesson(lesson);
+            await deleteLessonByLessonId(lessonId);
+            const { meta, items } = await fetchLessons(paginationMeta.page, paginationMeta.size);
+
+            if (items.length === 0 && paginationMeta.page > 1) {
+                handlePageChange(paginationMeta.page - 1);
             } else {
-                await createLessons(lesson);
+                setPaginationMeta(meta);
+                setItems(items);
             }
-            setModalOpen(false);
-            fetchData(paginationMeta);
         } catch (error) {
-            throw error;
+            console.error("Error: ", error.message);
         }
     };
 
@@ -71,7 +59,7 @@ const AdminManageLessons = () => {
     return (
         <AdminLayout title="Manage Lessons">
             {loading ? (
-                <Spinner />
+                <Spinner height="h-[70vh]" />
             ) : (
                 <Table
                     title="Lessons List"
@@ -82,16 +70,9 @@ const AdminManageLessons = () => {
                     handlePageChange={handlePageChange}
                     createNewButton={createNewButton}
                     editButton={editButton}
-                    deleteButton={null}
+                    deleteButton={deleteButton}
                 />
             )}
-
-            <LessonModal
-                isOpen={modalOpen}
-                onClose={() => setModalOpen(false)}
-                onSave={handleSave}
-                lesson={selectedLesson}
-            />
         </AdminLayout>
     )
 };

@@ -86,7 +86,7 @@ const AdminManageCourses = () => {
     return (
         <AdminLayout title="Manage Courses">
             {loading ? (
-                <Spinner />
+                <Spinner height="h-[70vh]" />
             ) : (
                 <Table
                     title="Courses List"

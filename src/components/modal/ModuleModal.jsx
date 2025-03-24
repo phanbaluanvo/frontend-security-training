@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import { fetchListCourses } from "@/services/CourseService";
 import { fetchListTopics } from "@/services/TopicService";
 import { LoaderCircle } from "lucide-react";
-import Select from "react-select";
+import Select from "@/components/common/Select";
+import Input from "@/components/common/Input";
 
 const ModuleModal = ({ isOpen, onClose, onSave, module }) => {
     const [chosenModule, setChosenModule] = useState({ moduleId: "", moduleName: "", description: "", courseId: "", topicId: "" });
@@ -12,6 +13,7 @@ const ModuleModal = ({ isOpen, onClose, onSave, module }) => {
     const [loadingTopics, setLoadingTopics] = useState(true);
     const [loadingCourses, setLoadingCourses] = useState(false);
     const [loadingModal, setLoadingModal] = useState(true);
+    const [actionLoading, setActionLoading] = useState(false);
 
     useEffect(() => {
         if (isOpen) {
@@ -83,29 +85,28 @@ const ModuleModal = ({ isOpen, onClose, onSave, module }) => {
     const handleSelectChange = (selectedOption, { name }) => {
         const value = selectedOption ? selectedOption.value : "";
 
-        // Debug log
-        console.log(`Select changed: ${name} = ${value}`);
-
         setChosenModule((prev) => {
             const newState = { ...prev, [name]: value };
-            console.log("New state:", newState);
             return newState;
         });
     };
 
-    const handleSave = async () => {
+    const handleSave = async (e) => {
+        e.preventDefault();
         if (!chosenModule.moduleName.trim() || !chosenModule.courseId) {
             setErrorMessage("All fields are required!");
             return;
         }
 
-        console.log("Saving module with data:", chosenModule);
-
         try {
+            setActionLoading(true);
             await onSave(chosenModule);
+            document.getElementById('module_modal').close();
             onClose();
         } catch (error) {
             setErrorMessage(error.message || "Failed to save module");
+        } finally {
+            setActionLoading(false);
         }
     };
 
@@ -125,131 +126,140 @@ const ModuleModal = ({ isOpen, onClose, onSave, module }) => {
         availableCourses: courses.length
     });
 
-    return isOpen ? (
-        <div className="fixed inset-0 flex justify-center items-center bg-black-200 bg-opacity-50">
-            <div className="absolute inset-0 bg-black opacity-50" onClick={onClose}></div>
+    // Nếu modal đang mở, hiển thị nó
+    if (isOpen) {
+        document.getElementById('module_modal').showModal();
+    }
 
-            <div className="bg-white p-6 rounded-lg shadow-lg w-4xl z-10 relative">
-                <h2 className="text-xl font-semibold mb-4">
-                    {module ? "Edit Module" : "Create Module"}
-                </h2>
-
+    return (
+        <dialog id="module_modal" className="modal">
+            <div className="modal-box max-w-[65vw] overflow-y-visible">
                 {loadingModal ? (
                     <div className="flex justify-center items-center py-10">
                         <LoaderCircle className="animate-spin w-10 h-10 text-gray-500" />
                     </div>
                 ) : (
                     <>
-                        <div className="grid grid-cols-12 gap-4">
-                            {module?.moduleId && (
-                                <div className="col-span-2">
-                                    <label className="text-gray-600 text-sm font-medium">Module ID:</label>
-                                    <input
-                                        type="text"
-                                        value={chosenModule.moduleId}
-                                        className="w-full p-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-600 cursor-not-allowed"
-                                        readOnly
+                        <h2 className="text-xl font-semibold mb-4">
+                            {module ? "Edit Module" : "Create Module"}
+                        </h2>
+                        <form onSubmit={handleSave}>
+                            <div className="grid grid-cols-12 gap-4">
+                                {module?.moduleId && (
+                                    <div className="col-span-2">
+                                        <Input
+                                            name="moduleId"
+                                            label="Module ID:"
+                                            value={chosenModule.moduleId}
+                                            className="bg-gray-200"
+                                            readOnly
+                                        />
+                                    </div>
+                                )}
+                                <div className={module?.moduleId ? "col-span-10" : "col-span-12"}>
+                                    <Input
+                                        name="moduleName"
+                                        label="Module Name:"
+                                        value={chosenModule.moduleName}
+                                        onChange={handleChange}
+                                        placeholder="Enter module name"
                                     />
                                 </div>
-                            )}
-                            <div className={module?.moduleId ? "col-span-10" : "col-span-12"}>
-                                <label className="text-gray-600 text-sm font-medium">Module Name:</label>
-                                <input
-                                    type="text"
-                                    name="moduleName"
-                                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                                    placeholder="Enter module name"
-                                    value={chosenModule.moduleName}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                            <div className="col-span-12">
-                                <label className="text-gray-600 text-sm font-medium">Description:</label>
-                                <textarea
-                                    name="description"
-                                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                                    placeholder="Enter description"
-                                    value={chosenModule.description}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                            <div className="col-span-12">
-                                <label className="text-gray-600 text-sm font-medium">Topic:</label>
-                                {loadingTopics ? (
-                                    <div className="flex items-center p-2">
-                                        <LoaderCircle className="animate-spin w-5 h-5 text-gray-500" />
-                                        <span className="ml-2">Loading topics...</span>
-                                    </div>
-                                ) : (
-                                    <Select
-                                        name="topicId"
-                                        className="w-full"
-                                        value={selectedTopicOption ? {
-                                            value: selectedTopicOption.topicId,
-                                            label: selectedTopicOption.topicName
-                                        } : null}
-                                        onChange={(option) => handleSelectChange(option, { name: "topicId" })}
-                                        options={topics.map((topic) => ({
-                                            value: topic.topicId,
-                                            label: topic.topicName
-                                        }))}
-                                        isSearchable
-                                        placeholder="Select a topic"
+                                <div className="col-span-12">
+                                    <label className="text-gray-600 text-sm font-medium">Description:</label>
+                                    <textarea
+                                        name="description"
+                                        className="w-full p-2 border border-gray-300 rounded-sm focus:ring-0 focus:ring-grey-500 input min-h-[10vh]"
+                                        placeholder="Enter description"
+                                        value={chosenModule.description}
+                                        onChange={handleChange}
                                     />
-                                )}
-                            </div>
-                            <div className="col-span-12">
-                                <label className="text-gray-600 text-sm font-medium">Course:</label>
-                                {loadingCourses ? (
-                                    <div className="flex items-center p-2">
-                                        <LoaderCircle className="animate-spin w-5 h-5 text-gray-500" />
-                                        <span className="ml-2">Loading courses...</span>
-                                    </div>
-                                ) : (
-                                    <Select
-                                        name="courseId"
-                                        className="w-full"
-                                        value={selectedCourseOption ? {
-                                            value: selectedCourseOption.courseId,
-                                            label: selectedCourseOption.courseName
-                                        } : null}
-                                        onChange={(option) => handleSelectChange(option, { name: "courseId" })}
-                                        options={courses.map((course) => ({
-                                            value: course.courseId,
-                                            label: course.courseName
-                                        }))}
-                                        isSearchable
-                                        placeholder={chosenModule.topicId ? "Select a course" : "Please select a topic first"}
-                                        isDisabled={!chosenModule.topicId || courses.length === 0}
-                                    />
+                                </div>
+                                <div className="col-span-12">
+                                    <label className="text-gray-600 text-sm font-medium">Topic:</label>
+                                    {loadingTopics ? (
+                                        <div className="flex items-center p-2">
+                                            <LoaderCircle className="animate-spin w-5 h-5 text-gray-500" />
+                                            <span className="ml-2">Loading topics...</span>
+                                        </div>
+                                    ) : (
+                                        <Select
+                                            name="topicId"
+                                            value={selectedTopicOption ? {
+                                                value: selectedTopicOption.topicId,
+                                                label: selectedTopicOption.topicName
+                                            } : null}
+                                            onChange={(option) => handleSelectChange(option, { name: "topicId" })}
+                                            options={topics.map((topic) => ({
+                                                value: topic.topicId,
+                                                label: topic.topicName
+                                            }))}
+                                            isSearchable
+                                            placeholder="Select a topic"
+                                        />
+                                    )}
+                                </div>
+                                <div className="col-span-12">
+                                    <label className="text-gray-600 text-sm font-medium">Course:</label>
+                                    {loadingCourses ? (
+                                        <div className="flex items-center p-2">
+                                            <LoaderCircle className="animate-spin w-5 h-5 text-gray-500" />
+                                            <span className="ml-2">Loading courses...</span>
+                                        </div>
+                                    ) : (
+                                        <Select
+                                            name="courseId"
+                                            value={selectedCourseOption ? {
+                                                value: selectedCourseOption.courseId,
+                                                label: selectedCourseOption.courseName
+                                            } : null}
+                                            onChange={(option) => handleSelectChange(option, { name: "courseId" })}
+                                            options={courses.map((course) => ({
+                                                value: course.courseId,
+                                                label: course.courseName
+                                            }))}
+                                            isSearchable
+                                            placeholder={chosenModule.topicId ? "Select a course" : "Please select a topic first"}
+                                            isDisabled={!chosenModule.topicId || courses.length === 0}
+                                        />
+                                    )}
+                                </div>
+
+                                {errorMessage && (
+                                    <p className="text-red-500 text-sm italic mt-1 col-span-12">{errorMessage}</p>
                                 )}
                             </div>
 
-                            {errorMessage && (
-                                <p className="text-red-500 text-sm italic mt-1 col-span-12">{errorMessage}</p>
-                            )}
-                        </div>
+                            <div className="modal-action mt-6 pt-4 border-t">
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        document.getElementById('module_modal').close();
+                                        onClose();
+                                    }}
+                                    className="btn btn-ghost min-w-[100px]"
+                                >
+                                    Close
+                                </button>
 
-                        <div className="mt-4 flex justify-end gap-2">
-                            <button
-                                onClick={onClose}
-                                className="px-4 py-2 bg-gray-400 text-white rounded-lg hover:bg-gray-500"
-                            >
-                                Close
-                            </button>
-
-                            <button
-                                onClick={handleSave}
-                                className="px-4 py-2 bg-red-800 text-white rounded-lg hover:bg-red-900 flex items-center justify-center w-32"
-                            >
-                                {module ? "Update" : "Create"}
-                            </button>
-                        </div>
+                                <button
+                                    type="submit"
+                                    className="btn min-w-[100px] text-white bg-red-700 hover:bg-red-800 border-none"
+                                    disabled={actionLoading}
+                                >
+                                    {actionLoading ? <LoaderCircle className="animate-spin w-5 h-5" /> :
+                                        module ? "Update" : "Create"}
+                                </button>
+                            </div>
+                        </form>
                     </>
                 )}
             </div>
-        </div>
-    ) : null;
+            <form method="dialog" className="modal-backdrop">
+                <button onClick={onClose}>close</button>
+            </form>
+        </dialog>
+    );
 };
 
 export default ModuleModal;

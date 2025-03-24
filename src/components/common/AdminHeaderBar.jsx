@@ -15,7 +15,7 @@ const AdminHeaderBar = ({ user, profileImage, onToggleSidebar }) => {
     const handleSignOut = async () => {
         const success = await signout();
         if (success) {
-            navigate("/");
+            navigate("/login");
         } else {
             alert("Logout failed. Please try again.");
         }
@@ -31,9 +31,9 @@ const AdminHeaderBar = ({ user, profileImage, onToggleSidebar }) => {
                 </button>
 
                 {/* Logo/Title Section */}
-                <h1 className="text-2xl font-bold text-red-900 ms-3">
+                <span className="text-2xl font-bold text-red-900 ms-3">
                     AgentPhisher
-                </h1>
+                </span>
             </div>
 
             <div className="flex items-center space-x-4">

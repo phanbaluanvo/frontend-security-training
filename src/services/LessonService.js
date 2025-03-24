@@ -1,5 +1,5 @@
 import axios from "@/configs/axios-customize"
-import { sfLike } from "spring-filter-query-builder";
+import { sfEqual, sfLike } from "spring-filter-query-builder";
 
 const baseURL = '/lessons'
 
@@ -19,7 +19,7 @@ export const fetchLessons = async (page, size) => {
 }
 
 export const fetchListLesson = async (filter) => {
-    const filterString = filter && sfLike('module.moduleId', `*${filter}*`).toString()
+    const filterString = filter && sfEqual('module.moduleId', `${filter}`).toString()
 
     const response = await axios.get(`${baseURL}/get/list`, {
         params: filterString,
@@ -44,6 +44,16 @@ export const getLessonByLessonId = async (lessonId) => {
     if (response.statusCode === 200) {
         return response.data;
     } else throw new Error(response.message)
+}
+
+export const getLessonDetailsByCourseId = async (courseId, lessonId) => {
+    const response = await axios.get(`${baseURL}/get/courses/${courseId}/lessons/${lessonId}`);
+
+    if (response.statusCode === 200) {
+        return response.data;
+    } else {
+        throw new Error(response.message);
+    }
 }
 
 export const updateLesson = async (lesson) => {

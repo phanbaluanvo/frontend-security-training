@@ -5,7 +5,7 @@ const SidebarSubItem = ({ to, label }) => {
         <li>
             <NavLink
                 to={to}
-                className={({ isActive }) => `block p-2 ${isActive ? "bg-neutral-500 text-white" : "hover:bg-neutral-800"}`}
+                className={({ isActive }) => `block p-2  rounded-l-sm ${isActive ? "bg-neutral-500 text-white " : "hover:bg-neutral-800"}`}
             >
                 {label}
             </NavLink>

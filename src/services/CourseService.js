@@ -1,5 +1,5 @@
 import axios from "@/configs/axios-customize"
-import { sfLike } from "spring-filter-query-builder";
+import { sfEqual, sfLike } from "spring-filter-query-builder";
 
 
 const baseURL = '/courses'
@@ -21,13 +21,12 @@ export const fetchCourses = async (page, size) => {
 
 export const fetchListCourses = async (filter) => {
 
-    const filterString = filter ? sfLike("topic.topicId", `*${filter}*`).toString() : null;
+    const filterString = filter ? sfEqual("topic.topicId", `${filter}`).toString() : null;
 
     const params = filterString ? { filter: filterString } : {};
 
     const response = await axios.get(`${baseURL}/get/list`, { params });
 
-    console.log(response);
 
     if (response.statusCode === 200) {
         return response.data;
@@ -54,8 +53,6 @@ export const getCourseByCourseId = async (courseId) => {
 export const updateCourse = async (course) => {
     const response = await axios.put(`${baseURL}/update/${course.courseId}`, course);
 
-    console.log(response);
-    console.log(course);
 
     if (response.statusCode !== 200) throw new Error(response.message)
 }

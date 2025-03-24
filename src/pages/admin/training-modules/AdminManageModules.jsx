@@ -86,7 +86,7 @@ const AdminManageModules = () => {
     return (
         <AdminLayout title="Manage Modules">
             {loading ? (
-                <Spinner />
+                <Spinner height="h-[70vh]" />
             ) : (
                 <Table
                     title="Modules List"

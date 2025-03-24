@@ -56,6 +56,7 @@ export const fetchUserAccount = async () => {
         }
     } catch (error) {
         console.error("Error fetching account:", error);
+        window.location.href = '/login';
         return null;
     }
 };

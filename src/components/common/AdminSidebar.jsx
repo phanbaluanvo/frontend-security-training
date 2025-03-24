@@ -38,7 +38,7 @@ const AdminSidebar = ({ isSidebarOpen }) => {
     const isActiveParent = (paths) => paths.some((path) => location.pathname.startsWith(path));
 
     return (
-        <aside className={`bg-red-800 text-white h-screen w-64 fixed mt-16 left-0 overflow-y-auto border-r border-neutral-700 transition-transform duration-300 ${isSidebarOpen ? "translate-x-0" : "-translate-x-64"}`}>
+        <aside className={`bg-red-800 text-white h-screen w-64 fixed left-0 overflow-y-auto border-r border-neutral-700 transition-transform duration-300 ${isSidebarOpen ? "translate-x-0" : "-translate-x-64"}`}>
             <ul>
                 {/* Dashboard */}
                 <li>

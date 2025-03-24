@@ -93,7 +93,8 @@ const AdminManageTopics = () => {
     return (
         <AdminLayout title="Manage Topics">
             {loading ? (
-                <Spinner />
+
+                <Spinner height="h-[70vh]" />
             ) : (
                 <Table
                     title="Topics List"

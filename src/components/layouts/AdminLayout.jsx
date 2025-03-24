@@ -14,13 +14,15 @@ const AdminLayout = ({ children, title }) => {
     };
 
     return (
-        <div className="flex flex-col w-full">
+        <div className="flex flex-col">
             {!loadingUser && user && user.role === "ADMIN" ? (
                 <>
                     <AdminHeaderBar user={user} profileImage={profileImageUrl} onToggleSidebar={toggleSidebar} />
                     <div className="flex">
-                        <AdminSidebar isSidebarOpen={isSidebarOpen} />
-                        <main className={`p-6 flex-1 overflow-y-auto mt-16 transition-all duration-300  ${isSidebarOpen ? 'ml-64' : 'ml-0'}`}>
+                        <div className="mt-16">
+                            <AdminSidebar isSidebarOpen={isSidebarOpen} />
+                        </div>
+                        <main className={`w-full p-6 mt-16 transition-all duration-300  ${isSidebarOpen ? 'ml-64' : 'ml-0'}`}>
                             <Title title={title} />
                             {children}
                         </main>
