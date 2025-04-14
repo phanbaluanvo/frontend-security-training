@@ -10,6 +10,7 @@ const AdminManageCourses = () => {
     const [paginationMeta, setPaginationMeta] = useState({ page: 1, size: 10, totalPages: 1, totalElements: 0 });
     const [items, setItems] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [loadingData, setLoadingData] = useState(true);
 
     // Modal state
     const [modalOpen, setModalOpen] = useState(false);
@@ -17,6 +18,7 @@ const AdminManageCourses = () => {
 
     const fetchData = async (paginationMeta) => {
         try {
+            setLoadingData(true)
             const { meta, items } = await fetchCourses(paginationMeta.page, paginationMeta.size);
             setPaginationMeta(meta);
             setItems(items);
@@ -24,6 +26,7 @@ const AdminManageCourses = () => {
             console.error("Failed to load course data:", error);
         } finally {
             setLoading(false);
+            setLoadingData(false)
         }
     };
 
@@ -98,6 +101,7 @@ const AdminManageCourses = () => {
                     createNewButton={createNewButton}
                     editButton={editButton}
                     deleteButton={deleteButton}
+                    loading={loadingData}
                 />
             )}
 

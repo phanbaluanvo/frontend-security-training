@@ -35,6 +35,39 @@ export const fetchListCourses = async (filter) => {
     }
 }
 
+export const fetchListCoursesRecommendedForUser = async () => {
+
+    const response = await axios.get(`${baseURL}/get/list/recommended`);
+
+    if (response.statusCode === 200) {
+        return response.data;
+    } else {
+        throw new Error(response);
+    }
+}
+
+export const fetchListCourseRegisteredByUser = async () => {
+
+    const response = await axios.get(`${baseURL}/get/list/registered`);
+
+    if (response.statusCode === 200) {
+        return response.data;
+    } else {
+        throw new Error(response);
+    }
+}
+
+export const fetchListCourseCompletedByUser = async () => {
+
+    const response = await axios.get(`${baseURL}/get/list/completed`);
+
+    if (response.statusCode === 200) {
+        return response.data;
+    } else {
+        throw new Error(response);
+    }
+}
+
 export const createCourse = async (course) => {
     const response = await axios.post(`${baseURL}/create`, course);
 
@@ -55,6 +88,16 @@ export const updateCourse = async (course) => {
 
 
     if (response.statusCode !== 200) throw new Error(response.message)
+}
+
+export const rateCourse = async (payload) => {
+
+    console.log(payload)
+
+    const response = await axios.put(`${baseURL}/rate`, payload)
+
+    if (response.statusCode !== 200) throw new Error(response.message)
+
 }
 
 export const deleteCourseByCourseId = async (courseId) => {

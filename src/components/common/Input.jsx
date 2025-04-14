@@ -2,7 +2,7 @@ import React from "react";
 
 const Input = ({ name, value, onChange, placeholder, type = "text", className = "", label, readOnly, disabled, ...props }) => {
     return (
-        <div className="w-full">
+        <div className="w-full space-y-2">
             {label && <label className="text-gray-600 text-sm font-medium">{label}</label>}
             <input
                 type={type}

@@ -10,6 +10,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { getLessonByLessonId, updateLesson, createLessons } from "@/services/LessonService";
 import { convertBase64ToFile, saveFile } from "@/services/UtilsService";
 import Input from "@/components/common/Input";
+import Spinner from "@/components/common/Spinner";
 
 const LessonPage = () => {
     const navigate = useNavigate();
@@ -275,7 +276,7 @@ const LessonPage = () => {
         <AdminLayout title={isEditing ? "Edit Lesson" : "Create Lesson"}>
             {loadingPage && !errorMessage ? (
                 <div className="flex justify-center items-center py-10">
-                    <LoaderCircle className="animate-spin w-10 h-10 text-gray-500" />
+                    <Spinner />
                 </div>
             ) : (
                 <div className="bg-white p-6 rounded-lg shadow-md">
@@ -404,7 +405,7 @@ const LessonPage = () => {
                                     <LoaderCircle className="animate-spin w-10 h-10 text-gray-500" />
                                 </div>
                             ) : (
-                                <div className="border border-gray-300 rounded-lg overflow-hidden">
+                                <div className="border border-gray-300 rounded-lg">
                                     <TextEditor
                                         content={chosenLesson.content}
                                         onContentChange={handleContentChange}

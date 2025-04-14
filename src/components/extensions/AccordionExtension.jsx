@@ -222,14 +222,14 @@ export const AccordionButton = ({ editor }) => {
 
     return (
         <>
-            <Tippy content="Insert Accordion" placement="top">
+            <div className='tooltip' data-tip='Insert Accordion'>
                 <button
                     onClick={() => setShowDialog(true)}
-                    className="p-2 border rounded-md hover:bg-red-700 hover:text-white transition-colors"
+                    className="p-2 border rounded-md transition-colors cursor-pointer"
                 >
                     <ChevronsUpDown size={18} />
                 </button>
-            </Tippy>
+            </div>
             {showDialog && (
                 <AccordionDialog
                     isOpen={showDialog}

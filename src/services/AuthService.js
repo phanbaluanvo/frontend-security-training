@@ -1,34 +1,44 @@
 import axios from "../configs/axios-customize";
 
 export const login = async (formData) => {
-    try {
-        const response = await axios.post("/auth/login", formData);
+    const response = await axios.post("/auth/login", formData);
 
-        console.log(response)
+    console.log(response)
 
-        if (response.statusCode === 200) {
+    if (response.statusCode === 200) {
 
-            const { accessToken, user } = response.data;
+        const { accessToken, user } = response.data;
 
-            // Save the token in localStorage
-            localStorage.setItem("access_token", accessToken);
+        // Save the token in localStorage
+        localStorage.setItem("access_token", accessToken);
 
-            // Return user role and success flag
-            return {
-                success: true,
-                user: user,
-            };
-        }
-    } catch (error) {
-        console.error("Login failed:", error);
-
-        // Return an error message if login fails
+        // Return user role and success flag
+        return {
+            success: true,
+            user: user,
+        };
+    } else {
         return {
             success: false,
-            message: error.response.data.message,
+            message: response.message,
         };
     }
 };
+
+export const signup = async (formData) => {
+    const response = await axios.post("/users/create", formData);
+    if (response.statusCode === 200) {
+        return {
+            success: true,
+            user: response.data,
+        };
+    } else {
+        return {
+            success: false,
+            message: response.message,
+        };
+    }
+}
 
 export const signout = async () => {
     try {

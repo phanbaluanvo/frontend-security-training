@@ -18,7 +18,7 @@ export const registerCourse = async (courseId) => {
     const response = await axios.post(`${baseURL}/register/courses/${courseId}`);
 
     if (response.statusCode === 200) {
-        return response.data;
+        return response;
     } else {
         throw new Error(response.message);
     }
@@ -36,6 +36,27 @@ export const fetchListCourses = async (filter) => {
     if (response.statusCode === 200) {
         return response.data;
     } else {
+        throw new Error(response);
+    }
+}
+
+export const markLessonComplete = async (lessonId, courseId, complete = true) => {
+    const payload = {
+        lessonId,
+        courseId,
+        complete
+    };
+
+    const response = await axios.post(`${baseURL}/tracking`, payload);
+    if (!response.statusCode === 200) {
+        throw new Error(response);
+    }
+}
+
+export const markCourseComplete = async (courseId) => {
+    const response = await axios.put(`${baseURL}/finish/course/${courseId}`);
+    console.log(response)
+    if (!response.statusCode === 200) {
         throw new Error(response);
     }
 }

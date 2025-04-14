@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBell, faChevronDown } from '@fortawesome/free-solid-svg-icons';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { signout } from '../../services/AuthService';
 
 const HeaderBar = ({ user, profileImage }) => {
@@ -15,7 +15,7 @@ const HeaderBar = ({ user, profileImage }) => {
     const handleSignOut = async () => {
         const success = await signout();
         if (success) {
-            navigate("/login");
+            navigate("/");
         } else {
             alert("Logout failed. Please try again.");
         }
@@ -25,14 +25,16 @@ const HeaderBar = ({ user, profileImage }) => {
         <header className="fixed top-0 left-0 right-0 bg-white py-4 px-6 flex justify-between items-center border-b shadow-md z-50 h-16">
             <div className="flex items-center justify-start">
                 {/* Logo/Title Section */}
-                <h1 className="text-2xl font-bold text-red-900">
-                    AgentPhisher
-                </h1>
+                <Link to="/learn" >
+                    <h1 className="text-2xl font-bold text-red-900">
+                        AgentPhisher
+                    </h1>
+                </Link>
             </div>
 
             <div className="flex items-center space-x-4">
                 {/* Notification Button */}
-                <button
+                {/* <button
                     type="button"
                     className="relative py-2 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 focus:outline-none focus:bg-gray-50"
                 >
@@ -41,9 +43,10 @@ const HeaderBar = ({ user, profileImage }) => {
                         <span className="animate-ping absolute inline-flex h-2 w-2 rounded-full bg-red-400 opacity-75"></span>
                         <span className="relative inline-flex text-xs bg-red-500 text-white rounded-full py-0.5 px-1.5">5</span>
                     </span>
-                </button>
+                </button> */}
 
                 {/* User Profile */}
+                <p>{user?.firstName} {user?.lastName}</p>
                 <img
                     src={profileImage}
                     alt="Avatar"

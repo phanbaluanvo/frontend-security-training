@@ -24,15 +24,15 @@ import { Accordion, AccordionButton } from '../extensions/AccordionExtension';
 import { ResizableImage } from '@/components/extensions/ResizableImage';
 
 const ToolButton = ({ onClick, isActive, icon: Icon, label, disabled }) => (
-    <Tippy content={label} placement="top">
+    <div className='tooltip' data-tip={label}>
         <button
             onClick={onClick}
             disabled={disabled}
-            className={`p-2 border rounded-md ${isActive ? 'bg-gray-300' : ''} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+            className={`p-2 border rounded-md ${isActive ? 'bg-gray-300' : ''} ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
         >
             <Icon size={18} />
         </button>
-    </Tippy>
+    </div>
 );
 
 const TextEditor = ({ content, onContentChange }) => {

@@ -15,7 +15,7 @@ const AdminHeaderBar = ({ user, profileImage, onToggleSidebar }) => {
     const handleSignOut = async () => {
         const success = await signout();
         if (success) {
-            navigate("/login");
+            navigate("/");
         } else {
             alert("Logout failed. Please try again.");
         }
@@ -38,7 +38,7 @@ const AdminHeaderBar = ({ user, profileImage, onToggleSidebar }) => {
 
             <div className="flex items-center space-x-4">
                 {/* Notification Button */}
-                <button
+                {/* <button
                     type="button"
                     className="relative py-2 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 focus:outline-none focus:bg-gray-50"
                 >
@@ -47,9 +47,10 @@ const AdminHeaderBar = ({ user, profileImage, onToggleSidebar }) => {
                         <span className="animate-ping absolute inline-flex h-2 w-2 rounded-full bg-red-400 opacity-75"></span>
                         <span className="relative inline-flex text-xs bg-red-500 text-white rounded-full py-0.5 px-1.5">5</span>
                     </span>
-                </button>
+                </button> */}
 
                 {/* User Profile */}
+                <p>{user?.firstName} {user?.lastName}</p>
                 <img
                     src={profileImage}
                     alt="Avatar"
